@@ -1,0 +1,7 @@
+# This query will allow you to trace the terminal server/rdp login session of a user
+
+index=<index> sourcetype=win:security EventCode=4648 termsrv
+| eval src_user__dest_user = src_user."->".Target_User_Name
+| eval src_host__dest_host = host."->".dest_nt_host
+| stats count AS sessions by index src_user__dest_user src_host__dest_host
+| table index src_host__dest_host src_user__dest_user sessions
