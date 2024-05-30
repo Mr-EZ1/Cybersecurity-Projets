@@ -1,4 +1,4 @@
-index="*_main" sourcetype=firewall_logs srcip=*
+index="*_main" sourcetype=firewall_logs dest_zone=WAN srcip=*
 | search NOT dstip IN (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 142.250.80.0/24, 172.253.63.0/24, 142.251.16.0/24)
 ````| dedup dstip```
 | iplocation dstip
