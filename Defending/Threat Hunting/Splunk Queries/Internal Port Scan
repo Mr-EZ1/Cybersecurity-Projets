@@ -1,0 +1,12 @@
+# Query to identify entities that are performing port scanning enumeration for the most commonly abused ports
+
+index="<index>" sourcetype=network_logs
+| rex "time=(?<log_data>.*?)(?=(date=|$))"
+| rex field=log_data "src=\s*(?<srcip>\d+\.\d+\.\d+\.\d+)"
+| rex field=log_data "dst=\s*(?<dstip>\d+\.\d+\.\d+\.\d+)"
+| rex field=log_data "dstport=(?<dstport>\d+)"
+| search srcip IN (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
+| search dstip IN (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
+| search dstport IN (445, 3389, 22, 80, 443)
+| table log_data
+| stats  count by srcip dstport
