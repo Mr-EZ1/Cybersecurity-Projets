@@ -1,0 +1,82 @@
+#Scirpt to pull O365 groups and memebrs.
+#Pre requisites are - MS Graph API secret, Client ID, Tenant ID.
+
+import pip._vendor.requests
+from pip._vendor import requests
+import csv
+import getpass
+
+def get_access_token(tenant_id, client_id, client_secret):
+    url = f'https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token'
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    body = {
+        'client_id': client_id,
+        'scope': 'https://graph.microsoft.com/.default',
+        'client_secret': client_secret,
+        'grant_type': 'client_credentials'
+    }
+    response = requests.post(url, headers=headers, data=body)
+    response.raise_for_status()
+    return response.json()['access_token']
+
+def get_groups(access_token):
+    url = 'https://graph.microsoft.com/v1.0/groups'
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    return response.json()['value']
+
+def get_group_members(access_token, group_id):
+    url = f'https://graph.microsoft.com/v1.0/groups/{group_id}/members'
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    members = response.json()['value']
+    member_emails = [member.get('mail', 'No Email Provided') for member in members if 'mail' in member]
+    return ', '.join(member_emails)
+
+def write_to_csv(groups_info, filename):
+    with open(filename, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Group ID', 'Group Display Name', 'Group Mail', 'Members'])
+        for group in groups_info:
+            writer.writerow([group['id'], group['displayName'], group['mail'], group['members']])
+
+def main():
+    tenant_id = input("Enter Tenant ID: ")
+    client_id = input("Enter Client ID: ")
+    client_secret = getpass.getpass("Enter Client Secret: ")
+    domain = input("Enter the domain (e.g., 'acme'): ")  # Get domain from the user
+
+    try:
+        access_token = get_access_token(tenant_id, client_id, client_secret)
+        groups = get_groups(access_token)
+        groups_info = []
+
+        for group in groups:
+            group_id = group['id']
+            group_display_name = group.get('displayName', 'No Display Name')
+            group_mail = group.get('mail', 'No Mail Provided')
+            members = get_group_members(access_token, group_id)
+
+            groups_info.append({
+                'id': group_id,
+                'displayName': group_display_name,
+                'mail': group_mail,
+                'members': members
+            })
+
+        filename = f"O365_Groups_Members_{domain}.csv"  # Construct the filename based on the domain
+        write_to_csv(groups_info, filename)
+        print(f"Data has been successfully written to {filename}")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+if __name__ == "__main__":
+    main()
