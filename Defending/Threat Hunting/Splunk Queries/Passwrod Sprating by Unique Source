@@ -1,0 +1,13 @@
+#This query can be used ot identify the point of interest
+
+index=<index_name> user=<username> EventID=4625 sourcetype="WinEventLog:Security"
+| stats dc(user) as num_users by src_ip, WorkstationName, _time span=2m
+| where num_users > 20
+| table _time, index, host, src_ip, WorkstationName, num_users
+| sort - _time
+
+#This query can be used for further investigation once the event of interest is isolated
+
+index=<index_name> user=<username>  (EventID=4624 OR EventID=4625) sourcetype="WinEventLog:Security"
+| table _time, index, host, user, src_ip, action, Status, subject, WorkstationName, LogonType, Logon_ID, authentication_method, LmPackageName, app, Process, LogonProcessName, ProcessName 
+| sort - _time
