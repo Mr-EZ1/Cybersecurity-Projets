@@ -1,0 +1,2 @@
+index=<index> sourcetype="o365:management:activity" Operation IN ("Remove-MailboxPermission", "Add-MailboxPermission")
+| table _time UserId Operation ObjectId
