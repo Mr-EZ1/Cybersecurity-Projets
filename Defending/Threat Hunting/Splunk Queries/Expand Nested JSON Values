@@ -1,0 +1,3 @@
+sourcetype="o365:management:activity" "New-TransportRule"  
+| eval params = mvzip('Parameters{}.Name', 'Parameters{}.Value', ":")
+| table params
