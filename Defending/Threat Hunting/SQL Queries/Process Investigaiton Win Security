@@ -1,0 +1,7 @@
+select ime, host, user_name, target_user_name, user_logon_id, target_user_logon_id, process_parent_executable, process_command_line 
+from win:security 
+where time between '<year>-mont/day hour/min/sec' and '<year>-mont/day hour/min/sec' 
+and index='<index>' 
+and event_code='4688'
+and parent_process_pid='<ppid>' or process_pid='<pid>' 
+order by ingest_time desc
