@@ -1,0 +1,12 @@
+index="*_main" sourcetype=firewall_logs srcip=*
+| search NOT dstip IN (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 142.250.80.0/24, 172.253.63.0/24, 142.251.16.0/24)
+````| dedup dstip```
+| iplocation dstip
+| lookup dnslookup clientip as dstip OUTPUT clienthost as DST_RESOLVED
+| search NOT DST_RESOLVED IN ("*akamaitechnologies.com", "lga*", "*amazonaws.com", "*googleusercontent.com", "dns.google", "one.one.one.one", "localhost", "*verizon.net", "*awsglobalaccelerator.com", "*cloudfront.net", "*webex.com")
+```| dedup  DST_RESOLVED```
+| table _time dstip DST_RESOLVED
+| stats count by dstip DST_RESOLVED
+| stats sum(bytes_out) as total_bytes_out by srcip
+| eval total_megabytes_out = total_bytes_out / (1024 * 1024)
+| sort - total_megabytes_out
