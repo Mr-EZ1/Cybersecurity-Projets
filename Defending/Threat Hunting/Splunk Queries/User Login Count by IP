@@ -1,0 +1,6 @@
+index="<index>" sourcetype="o365:management:activity" Operation=UserLoggedIn ClientIP="*" UserId="*.com"
+| iplocation ClientIP
+| search Country=<Country>
+| stats values(UserId) as UserAccounts by ClientIP Country Region City
+| eval UserAccounts=mvjoin(UserAccounts, ", ")
+| where mvcount(split(UserAccounts, ",")) > 1
