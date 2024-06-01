@@ -1,3 +1,5 @@
+# Investigate process creation events and trace them according ot the process tree
+
 select ime, host, user_name, target_user_name, user_logon_id, target_user_logon_id, process_parent_executable, process_command_line 
 from win:security 
 where time between '<year>-mont/day hour/min/sec' and '<year>-mont/day hour/min/sec' 
