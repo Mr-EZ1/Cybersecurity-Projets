@@ -3,5 +3,5 @@
 
 select * from win.eventlog 
 where cust_id='<index>' 
-and (subjectlogonid='0x3852c152' or targetlogonid='0x3852c152') 
+and (subjectlogonid='<hex_value_session_ID>' or targetlogonid='<hex_value_session_ID>') 
 and INGEST_TIME > CURRENT_TIMESTAMP - INTERVAL '30 minutes' 
