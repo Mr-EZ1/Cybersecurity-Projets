@@ -1,0 +1,7 @@
+# This query will show all activity associated by the logon ID which is unique
+# to the session of the account logon. Useful when investigating general account activity.
+
+select * from win.eventlog 
+where cust_id='<index>' 
+and (subjectlogonid='0x3852c152' or targetlogonid='0x3852c152') 
+and INGEST_TIME > CURRENT_TIMESTAMP - INTERVAL '30 minutes' 
