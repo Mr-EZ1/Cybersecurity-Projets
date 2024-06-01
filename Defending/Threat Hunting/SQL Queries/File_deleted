@@ -1,0 +1,10 @@
+# Track file deletion events
+# Pre requsites are that this type of logging needs to be enabled as it is not enabled by default
+# https://learn.microsoft.com/en-us/answers/questions/984643/file-server-2012r2-logs-for-access-delete-files
+
+select * 
+from win:eventlog
+where CUST_ID='<index>' 
+and host_hostname='<host>'  
+and eventid='4663'
+and ingest_time > current_timestamp - interval '1 hour'
