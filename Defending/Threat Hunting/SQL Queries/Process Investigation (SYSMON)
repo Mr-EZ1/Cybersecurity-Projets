@@ -2,7 +2,7 @@
 
 select event_time, hostname, user_name, user_logon_id, process_parent_executable, process_parent_command_line, process_command_line, process_executable, process_working_directory, parentprocessguid, processguid 
 from SYSMON 
-where time between '<year>-mont/day hour/min/sec' and '2<year>-mont/day hour/min/sec' 
+where time between '<year>-mont/day hour/min/sec' and '<year>-mont/day hour/min/sec' 
 and indexD='<index>' 
 and hostname='<hostname>' 
 and user_name='<user_name>' 
