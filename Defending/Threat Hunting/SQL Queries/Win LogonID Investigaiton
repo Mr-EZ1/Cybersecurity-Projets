@@ -2,6 +2,6 @@
 # to the session of the account logon. Useful when investigating general account activity.
 
 select * from win.eventlog 
-where cust_id='<index>' 
+where index='<index>' 
 and (subjectlogonid='<hex_value_session_ID>' or targetlogonid='<hex_value_session_ID>') 
 and INGEST_TIME > CURRENT_TIMESTAMP - INTERVAL '30 minutes' 
