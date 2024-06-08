@@ -4,7 +4,7 @@
 
 select * 
 from win:eventlog
-where CUST_ID='<index>' 
-and host_hostname='<host>'  
+where index='<index>' 
+and host='<host>'  
 and eventid='4663'
 and ingest_time > current_timestamp - interval '1 hour'
